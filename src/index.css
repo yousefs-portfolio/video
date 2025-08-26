@@ -1,0 +1,321 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables for Theme */
+@layer base {
+  :root {
+    --color-background-cream: #F5F1EB;
+    --color-primary: #1E88E5;
+    --color-success: #43A047;
+    --color-accent-cyber: #39FF14;
+    --color-accent-gold: #FFD700;
+    --color-accent-flame: #FF6B35;
+    --color-learning-focus: #4A90E2;
+    --color-learning-progress: #10B981;
+    --radius: 12px;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  .dark {
+    --color-background: #1a1a1a;
+    --color-background-paper: #2a2a2a;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background-cream dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+    min-height: 100vh;
+    font-feature-settings: "cv11", "salt", "ss01", "ss03";
+  }
+}
+
+/* Custom Component Styles */
+@layer components {
+  /* Progress Ring Animation */
+  .progress-ring {
+    @apply relative inline-flex items-center justify-center;
+  }
+
+  .progress-ring-circle {
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 0.5s ease-in-out;
+  }
+
+  /* Achievement Badge Glow */
+  .achievement-badge {
+    @apply relative;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+    animation: badge-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes badge-glow {
+    from {
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+    }
+    to {
+      filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+    }
+  }
+
+  /* Streak Flame Effect */
+  .streak-flame {
+    @apply relative;
+    background: linear-gradient(45deg, #FF6B35, #FFD700);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: flame-flicker 2s ease-in-out infinite;
+  }
+
+  @keyframes flame-flicker {
+    0%, 100% { transform: scaleY(1) translateY(0); }
+    25% { transform: scaleY(1.05) translateY(-2px); }
+    50% { transform: scaleY(0.95) translateY(1px); }
+    75% { transform: scaleY(1.02) translateY(-1px); }
+  }
+
+  /* Learning Focus Mode */
+  .focus-mode {
+    @apply relative overflow-hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .focus-mode::before {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Video Player Enhancements */
+  .video-player-wrapper {
+    @apply relative bg-black rounded-xl overflow-hidden shadow-2xl;
+  }
+
+  .video-chapter-marker {
+    @apply absolute bottom-0 h-1 bg-accent-cyber opacity-70 hover:opacity-100 transition-opacity cursor-pointer;
+  }
+
+  .video-transcript-panel {
+    @apply bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .transcript-word-highlight {
+    @apply bg-yellow-200 dark:bg-yellow-800 px-1 rounded transition-all duration-200;
+  }
+
+  /* Card Hover Effects */
+  .course-card {
+    @apply relative bg-white dark:bg-gray-800 rounded-2xl shadow-card hover:shadow-card-hover transform hover:-translate-y-1 transition-all duration-300;
+  }
+
+  .course-card-preview {
+    @apply absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300;
+  }
+
+  /* Button Variants */
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-dark transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  .btn-success {
+    @apply bg-success text-white px-6 py-3 rounded-xl font-semibold hover:bg-success-dark transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  .btn-accent {
+    @apply bg-gradient-to-r from-accent-flame to-accent-gold text-white px-6 py-3 rounded-xl font-semibold transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  /* Learning Progress Bar */
+  .progress-bar {
+    @apply relative h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden;
+  }
+
+  .progress-bar-fill {
+    @apply absolute top-0 left-0 h-full bg-gradient-to-r from-learning-focus to-learning-progress rounded-full transition-all duration-500 ease-out;
+  }
+
+  .progress-bar-glow {
+    @apply absolute top-0 right-0 w-4 h-full bg-white opacity-50 blur-sm animate-pulse;
+  }
+
+  /* XP Counter Animation */
+  .xp-counter {
+    @apply relative inline-block font-bold text-accent-gold;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+
+  .xp-gain {
+    animation: xp-popup 1s ease-out;
+  }
+
+  @keyframes xp-popup {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(-20px) scale(1.2);
+    }
+    100% {
+      transform: translateY(-40px) scale(0.8);
+      opacity: 0;
+    }
+  }
+
+  /* Skeleton Loading */
+  .skeleton {
+    @apply relative overflow-hidden bg-gray-200 dark:bg-gray-700;
+  }
+
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    animation: skeleton-loading 2s infinite;
+  }
+
+  @keyframes skeleton-loading {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Quiz Question Animations */
+  .quiz-option {
+    @apply p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 cursor-pointer transition-all duration-200;
+  }
+
+  .quiz-option:hover {
+    @apply border-primary transform scale-102;
+  }
+
+  .quiz-option.correct {
+    @apply border-success bg-success-light/20 animate-pulse;
+  }
+
+  .quiz-option.incorrect {
+    @apply border-red-500 bg-red-50 dark:bg-red-900/20 animate-shake;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800 rounded;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 dark:bg-gray-600 rounded hover:bg-gray-500 dark:hover:bg-gray-500;
+  }
+
+  /* Focus Styles */
+  .focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-white dark:ring-offset-gray-900;
+  }
+
+  /* Accessibility Skip Link */
+  .skip-link {
+    @apply absolute left-0 top-0 bg-primary text-white px-4 py-2 transform -translate-y-full focus:translate-y-0 transition-transform duration-200 z-50;
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-success bg-clip-text text-transparent;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .glass-effect {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Video.js Custom Theme */
+.video-js {
+  @apply rounded-xl overflow-hidden;
+}
+
+.vjs-theme-learning .vjs-control-bar {
+  @apply bg-gradient-to-t from-black/80 to-transparent;
+}
+
+.vjs-theme-learning .vjs-progress-holder {
+  @apply bg-gray-600/50;
+}
+
+.vjs-theme-learning .vjs-play-progress {
+  @apply bg-gradient-to-r from-learning-focus to-learning-progress;
+}
+
+.vjs-theme-learning .vjs-big-play-button {
+  @apply bg-primary/80 rounded-full;
+  border: none;
+}
+
+.vjs-theme-learning .vjs-big-play-button:hover {
+  @apply bg-primary;
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none;
+  }
+}
