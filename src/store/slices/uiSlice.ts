@@ -24,6 +24,8 @@ interface UIState {
   notesPanelOpen: boolean;
   playlistPanelOpen: boolean;
   searchOpen: boolean;
+  accessibilityMode: 'default' | 'highContrast' | 'protanopia' | 'deuteranopia' | 'tritanopia';
+  courseTheme: 'default' | 'math' | 'cs' | 'design';
   typographySettings: TypographySettings;
   modals: {
     auth: boolean;
@@ -61,6 +63,8 @@ const initialState: UIState = {
   notesPanelOpen: false,
   playlistPanelOpen: true,
   searchOpen: false,
+  accessibilityMode: 'default',
+  courseTheme: 'default',
   typographySettings: {
     fontFamily: 'Inter',
     fontSize: 16,
@@ -135,6 +139,14 @@ const uiSlice = createSlice({
       } else {
         state.sidebarOpen = true;
       }
+      if (typeof document !== 'undefined') {
+        const root = document.documentElement;
+        if (state.focusMode) {
+          root.classList.add('focus-mode');
+        } else {
+          root.classList.remove('focus-mode');
+        }
+      }
     },
     setVideoLayout: (state, action: PayloadAction<UIState['videoLayout']>) => {
       state.videoLayout = action.payload;
@@ -150,6 +162,56 @@ const uiSlice = createSlice({
     },
     toggleSearch: (state) => {
       state.searchOpen = !state.searchOpen;
+    },
+    setAccessibilityMode: (state, action: PayloadAction<UIState['accessibilityMode']>) => {
+      state.accessibilityMode = action.payload;
+      if (typeof document !== 'undefined') {
+        const root = document.documentElement;
+        const classes = [
+          'a11y-high-contrast',
+          'a11y-protanopia',
+          'a11y-deuteranopia',
+          'a11y-tritanopia',
+        ];
+        classes.forEach((c) => root.classList.remove(c));
+        switch (action.payload) {
+          case 'highContrast':
+            root.classList.add('a11y-high-contrast');
+            break;
+          case 'protanopia':
+            root.classList.add('a11y-protanopia');
+            break;
+          case 'deuteranopia':
+            root.classList.add('a11y-deuteranopia');
+            break;
+          case 'tritanopia':
+            root.classList.add('a11y-tritanopia');
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    setCourseTheme: (state, action: PayloadAction<UIState['courseTheme']>) => {
+      state.courseTheme = action.payload;
+      if (typeof document !== 'undefined') {
+        const root = document.documentElement;
+        const classes = ['course-theme-math', 'course-theme-cs', 'course-theme-design'];
+        classes.forEach((c) => root.classList.remove(c));
+        switch (action.payload) {
+          case 'math':
+            root.classList.add('course-theme-math');
+            break;
+          case 'cs':
+            root.classList.add('course-theme-cs');
+            break;
+          case 'design':
+            root.classList.add('course-theme-design');
+            break;
+          default:
+            break;
+        }
+      }
     },
     openModal: (state, action: PayloadAction<keyof UIState['modals']>) => {
       state.modals[action.payload] = true;
@@ -213,6 +275,33 @@ const uiSlice = createSlice({
         ...state.typographySettings,
         ...action.payload,
       };
+      if (typeof document !== 'undefined') {
+        const root = document.documentElement;
+        const t = state.typographySettings;
+        root.style.setProperty('--font-size', `${t.fontSize}px`);
+        root.style.setProperty('--line-height', `${t.lineHeight}`);
+        root.style.setProperty('--letter-spacing', `${t.letterSpacing}px`);
+        root.style.setProperty('--word-spacing', `${t.wordSpacing}px`);
+        root.style.setProperty(
+          '--paragraph-spacing',
+          `${Math.max(0, (t.lineHeight - 1) * 1.2)}rem`,
+        );
+        if (t.dyslexiaMode) {
+          root.classList.add('dyslexia-font');
+        } else {
+          root.classList.remove('dyslexia-font');
+        }
+        if (t.speedReadingMode) {
+          root.classList.add('speed-reading');
+        } else {
+          root.classList.remove('speed-reading');
+        }
+        if (t.highlightCenter) {
+          root.classList.add('speed-reading-center');
+        } else {
+          root.classList.remove('speed-reading-center');
+        }
+      }
     },
     resetUI: () => initialState,
     setEyeStrainMode: (state, action: PayloadAction<boolean>) => {
@@ -263,6 +352,8 @@ export const {
   resetUI,
   setEyeStrainMode,
   toggleEyeStrainMode,
+  setAccessibilityMode,
+  setCourseTheme,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

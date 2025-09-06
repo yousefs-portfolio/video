@@ -466,8 +466,24 @@ const VideoJsPlayer: React.FC<VideoJsPlayerProps> = ({
 
       playerRef.current = player;
 
+      // Smooth chapter transition detection
+      let __lastChapterIndex = -1;
+      player.on('timeupdate', () => {
+        if (!chapters || chapters.length === 0) return;
+        const t = player.currentTime();
+        const idx = chapters.findIndex((c) => t >= c.startTime && t < c.endTime);
+        if (idx !== -1 && idx !== __lastChapterIndex) {
+          __lastChapterIndex = idx;
+          const container = containerRef.current as HTMLElement | null;
+          if (container) {
+            container.classList.add('chapter-transition');
+            setTimeout(() => container.classList.remove('chapter-transition'), 320);
+          }
+        }
+      });
+
       // Apply custom styles
-      player.addClass('vjs-theme-fantasy');
+      player.addClass('vjs-theme-learning');
       player.addClass('vjs-big-play-centered');
     }
 

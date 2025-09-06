@@ -87,7 +87,11 @@ const persistSelected = throttle(() => {
       theme: state.ui?.theme ?? 'system',
       sidebarOpen: state.ui?.sidebarOpen ?? true,
       focusMode: state.ui?.focusMode ?? false,
+      eyeStrainMode: state.ui?.eyeStrainMode ?? false,
       videoLayout: state.ui?.videoLayout ?? 'default',
+      accessibilityMode: state.ui?.accessibilityMode ?? 'default',
+      courseTheme: state.ui?.courseTheme ?? 'default',
+      typographySettings: state.ui?.typographySettings ?? undefined,
     },
   };
   saveState(snapshot);

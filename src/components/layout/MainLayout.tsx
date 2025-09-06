@@ -1,50 +1,51 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  Box,
   AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
+  Avatar,
+  Badge,
+  Box,
+  Chip,
+  Divider,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Avatar,
   Menu,
   MenuItem,
-  Badge,
-  Divider,
-  useTheme,
-  useMediaQuery,
+  Toolbar,
   Tooltip,
-  Chip,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
-  Menu as MenuIcon,
-  Home,
-  School,
+  CenterFocusStrong,
+  ChevronLeft,
+  DarkMode,
   Dashboard,
   EmojiEvents,
   Group,
-  Settings,
-  Logout,
-  Person,
-  Notifications,
-  Search,
-  DarkMode,
-  LightMode,
+  Home,
   Leaderboard,
+  LightMode,
+  Logout,
+  Menu as MenuIcon,
+  Notifications,
+  Person,
+  School,
+  Search,
+  Settings,
   VideoLibrary,
-  ChevronLeft,
 } from '@mui/icons-material';
-import { motion, AnimatePresence } from 'framer-motion';
-import { RootState, AppDispatch } from '@/store';
+import { AnimatePresence, motion } from 'framer-motion';
+import { AppDispatch, RootState } from '@/store';
 import { logout } from '@/store/slices/authSlice';
-import { toggleSidebar, setTheme } from '@/store/slices/uiSlice';
+import { setTheme, toggleFocusMode, toggleSidebar } from '@/store/slices/uiSlice';
 import SearchBar from './SearchBar';
 import NotificationPanel from './NotificationPanel';
 
@@ -56,12 +57,12 @@ const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
-  
+
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { sidebarOpen, theme: appTheme } = useSelector((state: RootState) => state.ui);
   const { unreadCount } = useSelector((state: RootState) => state.notification);
   const { xp, streak } = useSelector((state: RootState) => state.gamification);
-  
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [notificationAnchor, setNotificationAnchor] = useState<null | HTMLElement>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -141,11 +142,7 @@ const MainLayout: React.FC = () => {
         <>
           <Box sx={{ p: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Avatar
-                src={user.avatar}
-                alt={user.name}
-                sx={{ width: 48, height: 48 }}
-              >
+              <Avatar src={user.avatar} alt={user.name} sx={{ width: 48, height: 48 }}>
                 {user.name.charAt(0)}
               </Avatar>
               <Box sx={{ flex: 1 }}>
@@ -211,9 +208,7 @@ const MainLayout: React.FC = () => {
                   },
                 }}
               >
-                <ListItemIcon sx={{ color: 'primary.main' }}>
-                  {item.icon}
-                </ListItemIcon>
+                <ListItemIcon sx={{ color: 'primary.main' }}>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text} />
               </ListItemButton>
             </ListItem>
@@ -278,11 +273,7 @@ const MainLayout: React.FC = () => {
           <Box sx={{ flexGrow: 1 }} />
 
           {/* Search */}
-          <IconButton
-            color="inherit"
-            onClick={() => setSearchOpen(true)}
-            sx={{ mr: 1 }}
-          >
+          <IconButton color="inherit" onClick={() => setSearchOpen(true)} sx={{ mr: 1 }}>
             <Search />
           </IconButton>
 
@@ -293,14 +284,17 @@ const MainLayout: React.FC = () => {
             </IconButton>
           </Tooltip>
 
+          {/* Focus Mode Toggle */}
+          <Tooltip title="Toggle Focus Mode">
+            <IconButton onClick={() => dispatch(toggleFocusMode())} color="inherit" sx={{ mr: 1 }}>
+              <CenterFocusStrong />
+            </IconButton>
+          </Tooltip>
+
           {/* Notifications */}
           {isAuthenticated && (
             <Tooltip title="Notifications">
-              <IconButton
-                color="inherit"
-                onClick={handleNotificationOpen}
-                sx={{ mr: 2 }}
-              >
+              <IconButton color="inherit" onClick={handleNotificationOpen} sx={{ mr: 2 }}>
                 <Badge badgeContent={unreadCount} color="error">
                   <Notifications />
                 </Badge>
@@ -328,13 +322,23 @@ const MainLayout: React.FC = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
-                <MenuItem onClick={() => { navigate('/profile'); handleProfileMenuClose(); }}>
+                <MenuItem
+                  onClick={() => {
+                    navigate('/profile');
+                    handleProfileMenuClose();
+                  }}
+                >
                   <ListItemIcon>
                     <Person fontSize="small" />
                   </ListItemIcon>
                   Profile
                 </MenuItem>
-                <MenuItem onClick={() => { navigate('/settings'); handleProfileMenuClose(); }}>
+                <MenuItem
+                  onClick={() => {
+                    navigate('/settings');
+                    handleProfileMenuClose();
+                  }}
+                >
                   <ListItemIcon>
                     <Settings fontSize="small" />
                   </ListItemIcon>

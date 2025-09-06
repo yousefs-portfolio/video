@@ -338,3 +338,202 @@
     display: none;
   }
 }
+
+/* Phase 1 Enhancements: Accessibility, Typography, Motion, Skeletons, Subtitles */
+:root {
+  --font-size: 16px;
+  --line-height: 1.5;
+  --letter-spacing: 0px;
+  --word-spacing: 0px;
+  --paragraph-spacing: 0.8rem;
+}
+
+body {
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing);
+  word-spacing: var(--word-spacing);
+}
+
+p {
+  margin-bottom: var(--paragraph-spacing);
+}
+
+/* Dyslexia-friendly font option */
+.dyslexia-font body {
+  font-family: 'OpenDyslexic', 'Atkinson Hyperlegible', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  letter-spacing: 0.02em;
+  word-spacing: 0.12em;
+}
+
+/* Speed reading mode */
+.speed-reading body {
+  letter-spacing: 0.02em;
+  word-spacing: 0.16em;
+}
+
+/* Center highlight suggestion utility (opt-in via class on container) */
+.speed-reading-center .reading-line {
+  background: linear-gradient(90deg, transparent 45%, rgba(255, 255, 0, 0.18) 50%, transparent 55%);
+}
+
+/* 3D text utility */
+.text-3d {
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.08),
+  0 2px 0 rgba(0, 0, 0, 0.06),
+  0 3px 0 rgba(0, 0, 0, 0.04),
+  0 4px 0 rgba(0, 0, 0, 0.03),
+  0 6px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Accessibility color alternatives */
+.a11y-high-contrast body {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.a11y-high-contrast *:focus {
+  outline: 3px solid #000 !important;
+  outline-offset: 2px;
+}
+
+.a11y-high-contrast .btn-primary {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+/* Simple color-blind friendly alternatives for key accents */
+.a11y-protanopia .btn-primary {
+  background-color: #2f6fed !important;
+}
+
+.a11y-deuteranopia .btn-primary {
+  background-color: #2f6fed !important;
+}
+
+.a11y-tritanopia .btn-primary {
+  background-color: #d66628 !important;
+}
+
+/* Course topic dynamic theming (affects gradients and accents in new components) */
+.course-theme-math .text-gradient {
+  @apply from-indigo-500 to-sky-500;
+}
+
+.course-theme-cs .text-gradient {
+  @apply from-emerald-500 to-teal-500;
+}
+
+.course-theme-design .text-gradient {
+  @apply from-pink-500 to-amber-500;
+}
+
+/* Subtitle typography system (Video.js) */
+.vjs-text-track-display, .vjs-text-track-cue {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.vjs-text-track-cue div {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+/* Smooth chapter transition effect around the player */
+.chapter-transition .video-js {
+  animation: chapter-flash 300ms ease-out;
+}
+
+@keyframes chapter-flash {
+  0% {
+    box-shadow: 0 0 0px rgba(56, 189, 248, 0);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(56, 189, 248, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(56, 189, 248, 0);
+  }
+}
+
+/* Bookmark animation */
+.bookmark-toggle {
+  transition: transform 120ms ease, color 120ms ease;
+}
+
+.bookmark-toggle.active {
+  color: #FFD700;
+  transform: scale(1.15);
+}
+
+.bookmark-toggle.active::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 4px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 1) 0%, rgba(255, 215, 0, 0) 70%);
+  animation: sparkle 600ms ease-out;
+}
+
+@keyframes sparkle {
+  from {
+    transform: scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Note-taking micro-interaction */
+.note-input {
+  @apply border rounded-lg p-3 transition-all duration-200;
+}
+
+.note-input:focus {
+  @apply ring-2 ring-learning-focus;
+  box-shadow: 0 8px 20px rgba(30, 136, 229, 0.18);
+}
+
+/* Additional skeleton variants */
+.skeleton.avatar {
+  @apply rounded-full w-12 h-12;
+}
+
+.skeleton.title {
+  @apply h-6 w-2/3 rounded-md;
+}
+
+.skeleton.text {
+  @apply h-4 w-full rounded-md;
+}
+
+.skeleton.card {
+  @apply h-40 w-full rounded-xl;
+}
+
+/* Use a consistent Video.js theme */
+.vjs-theme-learning .vjs-control-bar {
+  @apply bg-gradient-to-t from-black/80 to-transparent;
+}
+
+.vjs-theme-learning .vjs-progress-holder {
+  @apply bg-gray-600/50;
+}
+
+.vjs-theme-learning .vjs-play-progress {
+  @apply bg-gradient-to-r from-learning-focus to-learning-progress;
+}
+
+.vjs-theme-learning .vjs-big-play-button {
+  @apply bg-primary/80 rounded-full;
+  border: none;
+}
+
+.vjs-theme-learning .vjs-big-play-button:hover {
+  @apply bg-primary;
+}
