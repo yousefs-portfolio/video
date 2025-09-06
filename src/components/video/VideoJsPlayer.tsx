@@ -132,7 +132,7 @@ const VideoJsPlayer: React.FC<VideoJsPlayerProps> = ({
     // Initialize Video.js player
     if (!playerRef.current && videoRef.current) {
       const videoElement = videoRef.current;
-      
+
       // Configure player options
       const playerOptions: any = {
         autoplay,
@@ -193,14 +193,17 @@ const VideoJsPlayer: React.FC<VideoJsPlayerProps> = ({
         setIsReady(true);
 
         // Add caption tracks
-        captions.forEach(caption => {
-          player.addRemoteTextTrack({
-            src: caption.src,
-            srclang: caption.srclang,
-            label: caption.label,
-            kind: caption.kind,
-            default: caption.default,
-          }, false);
+        captions.forEach((caption) => {
+          player.addRemoteTextTrack(
+            {
+              src: caption.src,
+              srclang: caption.srclang,
+              label: caption.label,
+              kind: caption.kind,
+              default: caption.default,
+            },
+            false,
+          );
         });
 
         // Initialize custom plugins
@@ -283,31 +286,32 @@ const VideoJsPlayer: React.FC<VideoJsPlayerProps> = ({
           (player as any).keyboardShortcuts({
             shortcuts: {
               // Playback controls
-              'space': () => player.paused() ? player.play() : player.pause(),
-              'k': () => player.paused() ? player.play() : player.pause(),
-              
+              space: () => (player.paused() ? player.play() : player.pause()),
+              k: () => (player.paused() ? player.play() : player.pause()),
+
               // Seek controls
-              'j': () => player.currentTime(player.currentTime() - 10),
-              'l': () => player.currentTime(player.currentTime() + 10),
-              'left': () => player.currentTime(player.currentTime() - 5),
-              'right': () => player.currentTime(player.currentTime() + 5),
-              'home': () => player.currentTime(0),
-              'end': () => player.currentTime(player.duration()),
-              
+              j: () => player.currentTime(player.currentTime() - 10),
+              l: () => player.currentTime(player.currentTime() + 10),
+              left: () => player.currentTime(player.currentTime() - 5),
+              right: () => player.currentTime(player.currentTime() + 5),
+              home: () => player.currentTime(0),
+              end: () => player.currentTime(player.duration()),
+
               // Speed controls
               'shift+,': () => player.playbackRate(Math.max(0.25, player.playbackRate() - 0.25)),
               'shift+.': () => player.playbackRate(Math.min(2, player.playbackRate() + 0.25)),
-              
+
               // Volume controls
-              'up': () => player.volume(Math.min(1, player.volume() + 0.1)),
-              'down': () => player.volume(Math.max(0, player.volume() - 0.1)),
-              'm': () => player.muted(!player.muted()),
-              
+              up: () => player.volume(Math.min(1, player.volume() + 0.1)),
+              down: () => player.volume(Math.max(0, player.volume() - 0.1)),
+              m: () => player.muted(!player.muted()),
+
               // Fullscreen
-              'f': () => player.isFullscreen() ? player.exitFullscreen() : player.requestFullscreen(),
-              
+              f: () =>
+                player.isFullscreen() ? player.exitFullscreen() : player.requestFullscreen(),
+
               // Captions
-              'c': () => {
+              c: () => {
                 const tracks = player.textTracks();
                 for (let i = 0; i < tracks.length; i++) {
                   const track = tracks[i];
@@ -317,7 +321,7 @@ const VideoJsPlayer: React.FC<VideoJsPlayerProps> = ({
                   }
                 }
               },
-              
+
               // Numbers for seeking to percentage
               '0': () => player.currentTime(0),
               '1': () => player.currentTime(player.duration() * 0.1),
@@ -428,7 +432,7 @@ const VideoJsPlayer: React.FC<VideoJsPlayerProps> = ({
               type: 'volume_change',
               timestamp: Date.now(),
               position: player.currentTime(),
-              data: { 
+              data: {
                 volume: player.volume(),
                 muted: player.muted(),
               },

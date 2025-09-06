@@ -45,6 +45,21 @@
     min-height: 100vh;
     font-feature-settings: "cv11", "salt", "ss01", "ss03";
   }
+
+    /* Eye-strain reduction mode: warmer bg, reduced contrast, gentle text */
+    .eye-strain body {
+        background-color: #F7F3E8;
+        color: #2b2b2b;
+    }
+
+    .eye-strain {
+        --color-background-cream: #F7F3E8;
+        --eye-strain-filter: sepia(6%) contrast(90%) brightness(98%);
+    }
+
+    .eye-strain img, .eye-strain video, .eye-strain canvas {
+        filter: var(--eye-strain-filter);
+    }
 }
 
 /* Custom Component Styles */

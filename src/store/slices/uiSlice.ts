@@ -18,6 +18,7 @@ interface UIState {
   theme: 'light' | 'dark' | 'system';
   sidebarOpen: boolean;
   focusMode: boolean;
+  eyeStrainMode: boolean;
   videoLayout: 'default' | 'theater' | 'fullscreen' | 'pip';
   transcriptPanelOpen: boolean;
   notesPanelOpen: boolean;
@@ -54,6 +55,7 @@ const initialState: UIState = {
   theme: 'system',
   sidebarOpen: true,
   focusMode: false,
+  eyeStrainMode: false,
   videoLayout: 'default',
   transcriptPanelOpen: false,
   notesPanelOpen: false,
@@ -160,11 +162,14 @@ const uiSlice = createSlice({
         state.modals[key as keyof UIState['modals']] = false;
       });
     },
-    showToast: (state, action: PayloadAction<{
-      message: string;
-      type?: 'success' | 'error' | 'warning' | 'info';
-      duration?: number;
-    }>) => {
+    showToast: (
+      state,
+      action: PayloadAction<{
+        message: string;
+        type?: 'success' | 'error' | 'warning' | 'info';
+        duration?: number;
+      }>,
+    ) => {
       state.toasts.push({
         id: Date.now().toString(),
         message: action.payload.message,
@@ -178,16 +183,22 @@ const uiSlice = createSlice({
     clearToasts: (state) => {
       state.toasts = [];
     },
-    setLoading: (state, action: PayloadAction<{
-      key: keyof UIState['loading'];
-      value: boolean;
-    }>) => {
+    setLoading: (
+      state,
+      action: PayloadAction<{
+        key: keyof UIState['loading'];
+        value: boolean;
+      }>,
+    ) => {
       state.loading[action.payload.key] = action.payload.value;
     },
-    setError: (state, action: PayloadAction<{
-      key: keyof UIState['errors'];
-      value: string | null;
-    }>) => {
+    setError: (
+      state,
+      action: PayloadAction<{
+        key: keyof UIState['errors'];
+        value: string | null;
+      }>,
+    ) => {
       state.errors[action.payload.key] = action.payload.value;
     },
     clearErrors: (state) => {
@@ -204,6 +215,28 @@ const uiSlice = createSlice({
       };
     },
     resetUI: () => initialState,
+    setEyeStrainMode: (state, action: PayloadAction<boolean>) => {
+      state.eyeStrainMode = action.payload;
+      if (typeof document !== 'undefined') {
+        const root = document.documentElement;
+        if (action.payload) {
+          root.classList.add('eye-strain');
+        } else {
+          root.classList.remove('eye-strain');
+        }
+      }
+    },
+    toggleEyeStrainMode: (state) => {
+      state.eyeStrainMode = !state.eyeStrainMode;
+      if (typeof document !== 'undefined') {
+        const root = document.documentElement;
+        if (state.eyeStrainMode) {
+          root.classList.add('eye-strain');
+        } else {
+          root.classList.remove('eye-strain');
+        }
+      }
+    },
   },
 });
 
@@ -228,6 +261,8 @@ export const {
   clearErrors,
   updateTypographySettings,
   resetUI,
+  setEyeStrainMode,
+  toggleEyeStrainMode,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;
