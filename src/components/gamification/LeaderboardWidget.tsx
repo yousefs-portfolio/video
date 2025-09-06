@@ -1,43 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Box,
-  Paper,
-  Typography,
   Avatar,
+  Badge,
+  Box,
+  Button,
+  Chip,
+  Divider,
+  IconButton,
+  LinearProgress,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Tabs,
-  Tab,
-  Chip,
-  Stack,
-  IconButton,
-  Badge,
-  Divider,
-  LinearProgress,
-  Button,
   Menu,
   MenuItem,
+  Paper,
+  Stack,
+  Tab,
+  Tabs,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import {
   EmojiEvents,
-  TrendingUp,
-  TrendingDown,
-  Remove,
-  Star,
-  WorkspacePremium,
-  LocalFireDepartment,
-  School,
-  Groups,
-  Public,
   FilterList,
+  Groups,
+  LocalFireDepartment,
   MoreVert,
-  Share,
   PersonAdd,
+  Public,
+  Remove,
+  School,
+  Share,
+  TrendingDown,
+  TrendingUp,
+  WorkspacePremium,
 } from '@mui/icons-material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface LeaderboardEntry {
   id: string;
@@ -86,7 +85,7 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({
 
   const loadLeaderboardData = () => {
     setLoading(true);
-    
+
     // Simulate loading data
     setTimeout(() => {
       const mockData: LeaderboardEntry[] = [
@@ -176,7 +175,7 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({
           status: 'online',
         },
       ];
-      
+
       setEntries(mockData);
       setLoading(false);
     }, 500);
@@ -217,14 +216,7 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({
         />
       );
     }
-    return (
-      <Chip
-        icon={<Remove />}
-        label="—"
-        size="small"
-        sx={{ minWidth: 60 }}
-      />
-    );
+    return <Chip icon={<Remove />} label="—" size="small" sx={{ minWidth: 60 }} />;
   };
 
   const getXPByTimeFrame = (entry: LeaderboardEntry) => {
@@ -280,30 +272,10 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({
           variant="fullWidth"
           sx={{ mb: 2 }}
         >
-          <Tab
-            icon={<Public />}
-            iconPosition="start"
-            label="Global"
-            value="global"
-          />
-          <Tab
-            icon={<Groups />}
-            iconPosition="start"
-            label="Friends"
-            value="friends"
-          />
-          <Tab
-            icon={<School />}
-            iconPosition="start"
-            label="Group"
-            value="group"
-          />
-          <Tab
-            icon={<WorkspacePremium />}
-            iconPosition="start"
-            label="Course"
-            value="course"
-          />
+          <Tab icon={<Public />} iconPosition="start" label="Global" value="global" />
+          <Tab icon={<Groups />} iconPosition="start" label="Friends" value="friends" />
+          <Tab icon={<School />} iconPosition="start" label="Group" value="group" />
+          <Tab icon={<WorkspacePremium />} iconPosition="start" label="Course" value="course" />
         </Tabs>
 
         <Stack direction="row" spacing={1} justifyContent="center">
@@ -347,10 +319,14 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({
                   color: entry.isCurrentUser ? 'primary.contrastText' : 'text.primary',
                   borderRadius: 2,
                   border: entry.rank <= 3 ? '2px solid' : 'none',
-                  borderColor: 
-                    entry.rank === 1 ? '#FFD700' :
-                    entry.rank === 2 ? '#C0C0C0' :
-                    entry.rank === 3 ? '#CD7F32' : 'transparent',
+                  borderColor:
+                    entry.rank === 1
+                      ? '#FFD700'
+                      : entry.rank === 2
+                        ? '#C0C0C0'
+                        : entry.rank === 3
+                          ? '#CD7F32'
+                          : 'transparent',
                   '&:hover': {
                     bgcolor: entry.isCurrentUser ? 'primary.dark' : 'action.hover',
                   },
@@ -381,9 +357,13 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({
                             height: 56,
                             border: entry.rank <= 3 ? '3px solid' : 'none',
                             borderColor:
-                              entry.rank === 1 ? '#FFD700' :
-                              entry.rank === 2 ? '#C0C0C0' :
-                              entry.rank === 3 ? '#CD7F32' : 'transparent',
+                              entry.rank === 1
+                                ? '#FFD700'
+                                : entry.rank === 2
+                                  ? '#C0C0C0'
+                                  : entry.rank === 3
+                                    ? '#CD7F32'
+                                    : 'transparent',
                           }}
                         >
                           {entry.name.charAt(0)}
@@ -443,12 +423,8 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({
                         <Typography variant="body2">
                           <strong>{getXPByTimeFrame(entry).toLocaleString()}</strong> XP
                         </Typography>
-                        <Typography variant="body2">
-                          {entry.badges} badges
-                        </Typography>
-                        <Typography variant="body2">
-                          {entry.courses} courses
-                        </Typography>
+                        <Typography variant="body2">{entry.badges} badges</Typography>
+                        <Typography variant="body2">{entry.courses} courses</Typography>
                       </Stack>
                       <LinearProgress
                         variant="determinate"
@@ -486,11 +462,7 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({
       </List>
 
       {/* User Action Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
         <MenuItem
           onClick={() => {
             if (selectedUser && onUserClick) {

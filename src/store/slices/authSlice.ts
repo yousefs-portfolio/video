@@ -1,5 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '@/types';
+import { authService } from '@/services/auth';
 
 interface AuthState {
   user: User | null;
@@ -21,14 +22,7 @@ const initialState: AuthState = {
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials: { email: string; password: string }) => {
-    // Implementation will connect to actual API
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message);
+    const data = await authService.login(credentials);
     return data;
   },
 );
@@ -36,32 +30,21 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
   'auth/register',
   async (userData: { email: string; password: string; name: string }) => {
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message);
+    const data = await authService.register(userData);
     return data;
   },
 );
 
 export const logout = createAsyncThunk('auth/logout', async () => {
-  await fetch('/api/auth/logout', { method: 'POST' });
+  await authService.logout();
   localStorage.removeItem('token');
 });
 
 export const checkAuth = createAsyncThunk('auth/checkAuth', async () => {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('No token');
-  
-  const response = await fetch('/api/auth/me', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message);
-  return data;
+  const data = await authService.me(token);
+  return data; // { user }
 });
 
 const authSlice = createSlice({

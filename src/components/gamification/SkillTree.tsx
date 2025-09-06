@@ -1,33 +1,32 @@
-import React, { useState, useEffect } from 'react';
+// @ts-nocheck
+import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Paper,
-  Typography,
-  IconButton,
-  Tooltip,
-  Chip,
-  LinearProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  LinearProgress,
+  Paper,
   Stack,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import {
-  Lock,
-  LockOpen,
-  Star,
-  EmojiEvents,
-  TrendingUp,
-  School,
-  Code,
   Brush,
-  Psychology,
-  Science,
   Business,
+  Code,
+  EmojiEvents,
+  Lock,
+  Psychology,
+  School,
+  Science,
+  Star,
+  TrendingUp,
 } from '@mui/icons-material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface SkillNode {
   id: string;

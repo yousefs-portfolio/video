@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Stack, IconButton } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
-import Lottie from 'lottie-react';
-import {
-  EmojiEvents,
-  Star,
-  WorkspacePremium,
-  School,
-  Celebration,
-  AutoAwesome,
-  Close,
-} from '@mui/icons-material';
-import confetti from 'canvas-confetti';
+import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { AnimatePresence, motion } from 'framer-motion';
+import { AutoAwesome, Celebration, Close, Star } from '@mui/icons-material';
+
+// Optional confetti: relies on window.confetti if loaded at runtime
+const launchConfetti = (opts: any) => {
+  try {
+    (window as any).confetti?.(opts);
+  } catch {}
+};
 
 interface Milestone {
   id: string;
@@ -28,17 +25,14 @@ interface MilestoneAnimationProps {
   onClose: () => void;
 }
 
-const MilestoneAnimation: React.FC<MilestoneAnimationProps> = ({
-  milestone,
-  onClose,
-}) => {
+const MilestoneAnimation: React.FC<MilestoneAnimationProps> = ({ milestone, onClose }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     if (milestone) {
       // Trigger confetti animation
       triggerConfetti(milestone.rarity);
-      
+
       // Show details after initial animation
       setTimeout(() => {
         setShowDetails(true);
@@ -67,7 +61,7 @@ const MilestoneAnimation: React.FC<MilestoneAnimationProps> = ({
     const count = particleCount[rarity as keyof typeof particleCount] || 50;
 
     // Center burst
-    confetti({
+    launchConfetti({
       particleCount: count,
       spread: 70,
       origin: { x: 0.5, y: 0.5 },
@@ -77,14 +71,14 @@ const MilestoneAnimation: React.FC<MilestoneAnimationProps> = ({
     // Side bursts for epic and legendary
     if (rarity === 'epic' || rarity === 'legendary') {
       setTimeout(() => {
-        confetti({
+        launchConfetti({
           particleCount: count / 2,
           angle: 60,
           spread: 55,
           origin: { x: 0, y: 0.6 },
           colors: selectedColors,
         });
-        confetti({
+        launchConfetti({
           particleCount: count / 2,
           angle: 120,
           spread: 55,
@@ -109,7 +103,7 @@ const MilestoneAnimation: React.FC<MilestoneAnimationProps> = ({
           }
 
           const particleCount = 50 * (timeLeft / duration);
-          confetti({
+          launchConfetti({
             ...defaults,
             particleCount,
             origin: { x: Math.random(), y: Math.random() - 0.2 },
@@ -293,9 +287,7 @@ const MilestoneAnimation: React.FC<MilestoneAnimationProps> = ({
                     boxShadow: '0 0 40px rgba(255, 255, 255, 0.3)',
                   }}
                 >
-                  <Box sx={{ fontSize: 64, color: 'white' }}>
-                    {milestone.icon}
-                  </Box>
+                  <Box sx={{ fontSize: 64, color: 'white' }}>{milestone.icon}</Box>
                 </Box>
               </motion.div>
 
@@ -381,14 +373,22 @@ const MilestoneAnimation: React.FC<MilestoneAnimationProps> = ({
                 transition={{ delay: 0.6 }}
               >
                 <Stack direction="row" spacing={0.5} justifyContent="center">
-                  {Array.from({ length: milestone.rarity === 'common' ? 1 : 
-                                       milestone.rarity === 'rare' ? 2 :
-                                       milestone.rarity === 'epic' ? 3 : 4 }).map((_, i) => (
+                  {Array.from({
+                    length:
+                      milestone.rarity === 'common'
+                        ? 1
+                        : milestone.rarity === 'rare'
+                          ? 2
+                          : milestone.rarity === 'epic'
+                            ? 3
+                            : 4,
+                  }).map((_, i) => (
                     <Star
                       key={i}
                       sx={{
                         fontSize: 20,
-                        color: milestone.rarity === 'legendary' ? '#FFD700' : 'rgba(255, 255, 255, 0.8)',
+                        color:
+                          milestone.rarity === 'legendary' ? '#FFD700' : 'rgba(255, 255, 255, 0.8)',
                       }}
                     />
                   ))}
@@ -422,10 +422,7 @@ export const useMilestone = () => {
     triggerMilestone,
     closeMilestone,
     MilestoneComponent: () => (
-      <MilestoneAnimation
-        milestone={currentMilestone}
-        onClose={closeMilestone}
-      />
+      <MilestoneAnimation milestone={currentMilestone} onClose={closeMilestone} />
     ),
   };
 };

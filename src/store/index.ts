@@ -8,6 +8,50 @@ import gamificationReducer from './slices/gamificationSlice';
 import notificationReducer from './slices/notificationSlice';
 import uiReducer from './slices/uiSlice';
 
+const PERSIST_KEY = 'app:persist:v1';
+
+function loadState(): any | undefined {
+  try {
+    const raw = localStorage.getItem(PERSIST_KEY);
+    if (!raw) return undefined;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function saveState(state: any) {
+  try {
+    const data = JSON.stringify(state);
+    localStorage.setItem(PERSIST_KEY, data);
+  } catch {}
+}
+
+// Simple throttle to avoid writing too often
+function throttle<T extends (...args: any[]) => void>(fn: T, wait: number): T {
+  let last = 0;
+  let queued: any = null;
+  return function (this: any, ...args: any[]) {
+    const now = Date.now();
+    if (now - last >= wait) {
+      last = now;
+      fn.apply(this, args);
+    } else {
+      clearTimeout(queued);
+      queued = setTimeout(
+        () => {
+          last = Date.now();
+          fn.apply(this, args);
+        },
+        wait - (now - last),
+      );
+    }
+  } as T;
+}
+
+const preloadedState = loadState();
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -18,6 +62,7 @@ export const store = configureStore({
     notification: notificationReducer,
     ui: uiReducer,
   },
+  preloadedState,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -27,6 +72,28 @@ export const store = configureStore({
       },
     }),
 });
+
+// Persist selected slices
+const persistSelected = throttle(() => {
+  const state: any = store.getState();
+  const snapshot = {
+    auth: {
+      user: state.auth?.user ?? null,
+      token: state.auth?.token ?? null,
+      isAuthenticated: state.auth?.isAuthenticated ?? false,
+      // don't persist isLoading/error
+    },
+    ui: {
+      theme: state.ui?.theme ?? 'system',
+      sidebarOpen: state.ui?.sidebarOpen ?? true,
+      focusMode: state.ui?.focusMode ?? false,
+      videoLayout: state.ui?.videoLayout ?? 'default',
+    },
+  };
+  saveState(snapshot);
+}, 500);
+
+store.subscribe(persistSelected);
 
 setupListeners(store.dispatch);
 

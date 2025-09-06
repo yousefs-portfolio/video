@@ -1,12 +1,12 @@
-import { StrictMode } from 'react';
+import { StrictMode, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider, CssBaseline } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import { AnimatePresence } from 'framer-motion';
-import { store } from './store';
-import { lightTheme } from './styles/theme';
+import { RootState, store } from './store';
+import { darkTheme, lightTheme } from './styles/theme';
 import './index.css';
 import App from './App';
 
@@ -22,6 +22,25 @@ const queryClient = new QueryClient({
   },
 });
 
+function ThemedApp() {
+  const uiTheme = useSelector((state: RootState) => state.ui.theme);
+  const prefersDark =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const muiTheme = useMemo(() => {
+    const mode = uiTheme === 'system' ? (prefersDark ? 'dark' : 'light') : uiTheme;
+    return mode === 'dark' ? darkTheme : lightTheme;
+  }, [uiTheme, prefersDark]);
+
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <CssBaseline />
+      <AnimatePresence mode="wait">
+        <App />
+      </AnimatePresence>
+    </ThemeProvider>
+  );
+}
+
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
@@ -33,12 +52,7 @@ createRoot(rootElement).render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <ThemeProvider theme={lightTheme}>
-            <CssBaseline />
-            <AnimatePresence mode="wait">
-              <App />
-            </AnimatePresence>
-          </ThemeProvider>
+          <ThemedApp />
         </BrowserRouter>
       </QueryClientProvider>
     </Provider>

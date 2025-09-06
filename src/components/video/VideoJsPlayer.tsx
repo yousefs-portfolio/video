@@ -1,7 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
-import '@videojs/themes/dist/fantasy/index.css';
 import { Box, Paper } from '@mui/material';
 import Player from 'video.js/dist/types/player';
 
@@ -256,9 +255,17 @@ const VideoJsPlayer: React.FC<VideoJsPlayerProps> = ({
         }
 
         if (analyticsEnabled) {
+          const __authUser = (() => {
+            try {
+              return JSON.parse(localStorage.getItem('auth:user') || 'null');
+            } catch {
+              return null;
+            }
+          })();
+          const __userId = __authUser?.id || 'anonymous';
           (player as any).analytics({
             videoId,
-            userId: 'current-user-id', // Get from auth context
+            userId: __userId,
             onEvent: (event: any) => {
               if (onInteraction) {
                 onInteraction({
